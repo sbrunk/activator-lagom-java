@@ -15,18 +15,15 @@ import com.lightbend.lagom.javadsl.api.ServiceCall;
 /**
  * The hello stream interface.
  * <p>
- * This describes everything that Lagom needs to know about how to serve and consume the HelloStream service.
+ * This describes everything that Lagom needs to know about how to serve and
+ * consume the HelloStream service.
  */
 public interface HelloStream extends Service {
 
-    ServiceCall<NotUsed, Source<String, NotUsed>, Source<String, NotUsed>> stream();
+  ServiceCall<NotUsed, Source<String, NotUsed>, Source<String, NotUsed>> stream();
 
-    @Override
-    default Descriptor descriptor() {
-        // @formatter:off
-        return named("hellostream").with(
-                namedCall("hellostream", stream())
-        );
-        // @formatter:on
-    }
+  @Override
+  default Descriptor descriptor() {
+    return named("hellostream").with(namedCall("hellostream", stream()));
+  }
 }

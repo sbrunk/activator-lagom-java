@@ -19,7 +19,6 @@ import sample.helloworld.impl.HelloCommand.Hello;
 import sample.helloworld.impl.HelloCommand.UseGreetingMessage;
 import sample.helloworld.impl.HelloEvent.GreetingMessageChanged;
 
-
 public class HelloWorldTest {
 
   static ActorSystem system;
@@ -37,15 +36,14 @@ public class HelloWorldTest {
 
   @Test
   public void testHelloWorld() {
-    PersistentEntityTestDriver<HelloCommand, HelloEvent, WorldState> driver =
-        new PersistentEntityTestDriver<>(system, new HelloWorld(), "world-1");
+    PersistentEntityTestDriver<HelloCommand, HelloEvent, WorldState> driver = new PersistentEntityTestDriver<>(system,
+        new HelloWorld(), "world-1");
 
     Outcome<HelloEvent, WorldState> outcome1 = driver.run(new Hello("Alice", Optional.empty()));
     assertEquals("Hello, Alice!", outcome1.getReplies().get(0));
     assertEquals(Collections.emptyList(), outcome1.issues());
 
-    Outcome<HelloEvent, WorldState> outcome2 = driver.run(
-        new UseGreetingMessage("Hi"),
+    Outcome<HelloEvent, WorldState> outcome2 = driver.run(new UseGreetingMessage("Hi"),
         new Hello("Bob", Optional.empty()));
     assertEquals(1, outcome2.events().size());
     assertEquals(new GreetingMessageChanged("Hi"), outcome2.events().get(0));
