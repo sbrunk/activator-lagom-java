@@ -14,7 +14,7 @@ import com.lightbend.lagom.javadsl.api.ServiceCall;
 
 /**
  * The hello stream interface.
- * <p/>
+ * <p>
  * This describes everything that Lagom needs to know about how to serve and consume the HelloStream service.
  */
 public interface HelloStream extends Service {
