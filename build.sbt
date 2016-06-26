@@ -19,7 +19,7 @@ lazy val helloworldImpl = project("helloworld-impl")
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(helloworldApi)
+  .dependsOn(helloworldApi, utils)
 
 lazy val hellostreamApi = project("hellostream-api")
   .settings(version := "1.0-SNAPSHOT")
@@ -30,15 +30,28 @@ lazy val hellostreamApi = project("hellostream-api")
 lazy val hellostreamImpl = project("hellostream-impl")
   .settings(version := "1.0-SNAPSHOT")
   .enablePlugins(LagomJava)
-  .dependsOn(hellostreamApi, helloworldApi)
+  .dependsOn(hellostreamApi, helloworldApi, utils)
   .settings(
     libraryDependencies += lagomJavadslTestKit
+  )
+
+lazy val utils = project("utils")
+  .settings(
+    version := "1.0-SNAPSHOT",
+    libraryDependencies += lagomJavadslApi
   )
 
 def project(id: String) = Project(id, base = file(id))
   .settings(eclipseSettings: _*)
   .settings(javacOptions in compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"))
   .settings(jacksonParameterNamesJavacSettings: _*) // applying it to every project even if not strictly needed.
+  .settings(
+    scalacOptions in Compile += "-Xexperimental" // this enables Scala lambdas to be passed as Java SAMs
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.7.3" // actually, only api projects need this
+  ))
 
 
 // See https://github.com/FasterXML/jackson-module-parameter-names
@@ -54,8 +67,8 @@ lazy val eclipseSettings = Seq(
   EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource,
   EclipseKeys.eclipseOutput := Some(".target"),
   EclipseKeys.withSource := true,
-  EclipseKeys.withJavadoc := true,
+  EclipseKeys.withJavadoc := true
   // avoid some scala specific source directories
-  unmanagedSourceDirectories in Compile := Seq((javaSource in Compile).value),
-  unmanagedSourceDirectories in Test := Seq((javaSource in Test).value)
+  //unmanagedSourceDirectories in Compile := Seq((javaSource in Compile).value),
+  //unmanagedSourceDirectories in Test := Seq((javaSource in Test).value)
 )
